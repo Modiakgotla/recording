@@ -1,6 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View } from 'react-native';
-
+import * as Sharing from 'expo-sharing' ;
+import {Audio} from 'expo-av'
+import React from 'react';
 export default function App() {
 
   const [recording,setRecording] = React.useState();
@@ -9,14 +11,14 @@ export default function App() {
 
   async function startRecording() {
     try{
-      const permission = await Audio.requestPermissionAsync();
+      const permission = await Audio.requestPermissionsAsync();
 
-      if (permission.status === "passed") {
+      if (permission.status === "granted") {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true
         });
-        const {recording} = await Audio.Recording.createAsync(
+        const { recording } = await Audio.Recording.createAsync(
           Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
         );
 
@@ -41,15 +43,15 @@ export default function App() {
       duration: getDurationFormatted(status.durationMillis),
       file:recording.getURI()
     });
-    setRecording(updateRecordings);
+    setRecordings(updateRecordings);
   }
 
   function getDurationFormatted(millis) {
     const minutes = millis /1000/60;
     const minutesDisplay = Math.floor(minutes);
-    const seconds = Math.round((minutes - minutesDisplay) = 60);
-    const secondsDisplay = seconds <10 ? '0${seconds}' : seconds;
-    return {minutesDisplay : secondsDisplay};
+    const seconds = Math.round((minutes - minutesDisplay) * 60);
+    const secondsDisplay = seconds <10 ? `0${seconds}` : seconds;
+    return `${minutesDisplay} : ${secondsDisplay}`;
 
   }
 
@@ -59,6 +61,7 @@ export default function App() {
         <View key={index} style={styles.row}>
           <Text style={styles.fill}>Recording {index +1} - {recordingLine.duration}</Text>
           <Button style={styles.button} onPress={()=> recordingLine.sound.replayAsync()} title="Play"></Button>
+          <Button style={styles.button} onPress={()=> Sharing.shareAsync(recordingLine.file)} title="Share"></Button>
         </View>
       )
     })
@@ -70,6 +73,7 @@ export default function App() {
       <Button
       title={recording ? 'Stop Recording' : 'start Recording'}
       onPress={recording ? stopRecording : startRecording} />
+      {getRecordingLines()}
       <StatusBar style="auto" />
     </View>
   );

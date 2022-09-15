@@ -11,13 +11,17 @@
   "dependencies": {
     "@expo/webpack-config": "^0.17.2",
     "expo": "^46.0.10",
+    "expo-av": "^12.0.4",
+    "expo-sharing": "^10.3.0",
     "expo-status-bar": "^1.4.0",
+    "react-dom": "18.0.0",
     "react-native": "0.69.5",
-    "react-native-web": "^0.18.9",
-    "react-dom": "18.0.0"
+    "react-native-web": "^0.18.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "expo-cli": "^6.0.5",
+    "react-error-overlay": "^6.0.9"
   },
   "private": true
 }
